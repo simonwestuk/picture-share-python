@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="polaroid">
+    <img src="{{ url_for('static', filename='post_pics/' ~ post.image_file) }}" alt="{{ post.title }}">
+    <p class="title">{{ post.title }}</p>
+    <p class="details">{{ post.date_posted.strftime('%B %d, %Y') }} by {{ post.author.username }}</p>
+    {% if post.author == current_user %}
+        <a href="{{ url_for('main.update_post', post_id=post.id) }}" class="edit-icon">
+            <i class="material-icons">edit</i>
+        </a>
+        <form action="{{ url_for('main.delete_post', post_id=post.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete(this);">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="delete-icon">
+                <i class="material-icons">delete</i>
+            </button>
+        </form>
+    {% endif %}
+</div>
+<div class="card-content">
+    <p>{{ post.content }}</p>
+</div>
+{% endblock %}

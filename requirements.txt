@@ -1,1 +1,7 @@
-Flask==2.3.2
+Flask
+Flask-SQLAlchemy
+Flask-Bcrypt
+Flask-Login
+flask_wtf
+email_validator
+Flask-Migrate

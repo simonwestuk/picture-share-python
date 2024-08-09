@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from app import create_app, db
+from flask_migrate import Migrate
 
-app = Flask(__name__)
+app = create_app()
+migrate = Migrate(app, db)
 
-@app.route("/")
-def hello_world():
-    return render_template("index.html", title="Hello")
+if __name__ == '__main__':
+    app.run(debug=True)

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="center-align">{{ legend }}</h1>
+<div class="row">
+    <form class="col s12" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="row">
+            <div class="input-field col s12">
+                {{ form.title.label }}
+                {{ form.title(class="validate") }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                {{ form.content.label }}
+                {{ form.content(class="materialize-textarea") }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="file-field input-field col s12">
+                <div class="btn">
+                    <span>File</span>
+                    {{ form.picture() }}
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s12">
+                {{ form.submit(class="btn waves-effect waves-light") }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

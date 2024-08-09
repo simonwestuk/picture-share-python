@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="center-align">Manage Users</h1>
+<div class="row">
+    <form method="POST" class="col s12">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <ul class="collection">
+            {% for user in users %}
+            <li class="collection-item">
+                <span>{{ user.username }} - {{ user.email }}</span>
+                <label>
+                    <input type="checkbox" name="is_admin_{{ user.id }}" {% if user.is_admin %}checked{% endif %}/>
+                    <span>Admin</span>
+                </label>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="row">
+            <div class="col s12 center-align">
+                <button type="submit" class="btn waves-effect waves-light">Update Roles</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

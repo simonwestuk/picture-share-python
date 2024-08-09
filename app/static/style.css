@@ -1,0 +1,159 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+}
+
+nav {
+    background-color: #3f51b5;
+}
+
+.brand-logo {
+    font-size: 1.8rem;
+}
+
+.container {
+    margin-top: 30px;
+}
+
+/* Card Styles */
+.card {
+    margin-top: 20px;
+}
+
+.card .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Form Styles */
+.input-field label {
+    color: #3f51b5;
+}
+
+.input-field input[type=text]:focus + label,
+.input-field input[type=email]:focus + label,
+.input-field input[type=password]:focus + label {
+    color: #3f51b5;
+}
+
+.input-field input[type=text]:focus,
+.input-field input[type=email]:focus,
+.input-field input[type=password]:focus {
+    border-bottom: 1px solid #3f51b5;
+    box-shadow: 0 1px 0 0 #3f51b5;
+}
+
+.input-field input[type=text].validate.invalid,
+.input-field input[type=email].validate.invalid,
+.input-field input[type=password].validate.invalid {
+    border-bottom: 1px solid red;
+    box-shadow: 0 1px 0 0 red;
+}
+
+.input-field input[type=text].validate.valid,
+.input-field input[type=email].validate.valid,
+.input-field input[type=password].validate.valid {
+    border-bottom: 1px solid green;
+    box-shadow: 0 1px 0 0 green;
+}
+
+/* Button Styles */
+.btn {
+    background-color: #3f51b5;
+}
+
+.btn:hover {
+    background-color: #303f9f;
+}
+
+/* Table Styles */
+table.striped > tbody > tr:nth-child(odd) {
+    background-color: #e8eaf6;
+}
+
+table.striped > tbody > tr > td {
+    padding: 15px;
+}
+
+/* Flash Messages */
+.card-panel.success {
+    background-color: #4caf50;
+    color: white;
+}
+
+.card-panel.danger {
+    background-color: #f44336;
+    color: white;
+}
+
+.card-panel.info {
+    background-color: #2196f3;
+    color: white;
+}
+
+.card-panel.warning {
+    background-color: #ff9800;
+    color: white;
+}
+/* Polaroid Styles */
+.polaroid {
+    position: relative;
+    width: 300px; /* Adjust width as needed */
+    padding: 10px;
+    background: white;
+    border: 1px solid #bfbfbf;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin: 20px;
+    font-family: 'Indie Flower', cursive; /* Handwriting font */
+    transition: transform 0.2s; /* Animation */
+}
+
+.polaroid:hover {
+    transform: scale(1.05);
+}
+
+.polaroid img {
+    width: 100%;
+    height: 300px; /* Ensure square shape */
+    object-fit: cover; /* Crop to fit */
+}
+
+.polaroid p.title {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.polaroid p.details {
+    margin-top: 5px;
+    font-size: 12px;
+    color: gray;
+}
+
+.edit-icon, .delete-icon {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    color: #ff4433;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    display: none; /* Hidden by default */
+}
+
+.polaroid:hover .edit-icon, .polaroid:hover .delete-icon {
+    display: block; /* Show on hover */
+}
+
+.edit-icon {
+    bottom: 10px;
+    right: 10px;
+}
+
+.delete-icon {
+    top: 10px;
+    right: 10px;
+}
+
+/* Import the Google Font for handwriting */
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');

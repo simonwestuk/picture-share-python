@@ -1,28 +1,46 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request, abort, current_app, Blueprint
+from flask import (
+    render_template,
+    url_for,
+    flash,
+    redirect,
+    request,
+    abort,
+    current_app,
+    Blueprint,
+)
 from app import db, bcrypt
 from app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
-from app.forms import RegistrationForm, LoginForm, PostForm, UpdatePostForm, UpdateRoleForm
+from app.forms import (
+    RegistrationForm,
+    LoginForm,
+    PostForm,
+    UpdatePostForm,
+    UpdateRoleForm,
+)
 from functools import wraps
 
-main = Blueprint('main', __name__)
+main = Blueprint("main", __name__)
+
 
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_admin:
-            return redirect(url_for('main.home'))
+            return redirect(url_for("main.home"))
         return f(*args, **kwargs)
+
     return decorated_function
+
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
     _, f_ext = os.path.splitext(form_picture.filename)
     picture_fn = random_hex + f_ext
-    picture_path = os.path.join(current_app.root_path, 'static/post_pics', picture_fn)
+    picture_path = os.path.join(current_app.root_path, "static/post_pics", picture_fn)
 
     output_size = (500, 500)
     i = Image.open(form_picture)
@@ -31,73 +49,94 @@ def save_picture(form_picture):
 
     return picture_fn
 
+
 @main.route("/")
 @main.route("/home")
 def home():
     posts = Post.query.all()
-    return render_template('home.html', posts=posts)
+    return render_template("home.html", posts=posts)
 
-@main.route("/register", methods=['GET', 'POST'])
+
+@main.route("/register", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for("main.home"))
     form = RegistrationForm()
     if form.validate_on_submit():
         existing_user = User.query.filter_by(email=form.email.data).first()
         if existing_user:
-            flash('Email already registered. Please log in or use a different email.', 'danger')
-            return redirect(url_for('main.register'))
-        
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+            flash(
+                "Email already registered. Please log in or use a different email.",
+                "danger",
+            )
+            return redirect(url_for("main.register"))
+
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode(
+            "utf-8"
+        )
+        user = User(
+            username=form.username.data, email=form.email.data, password=hashed_password
+        )
         db.session.add(user)
         db.session.commit()
-        flash('Your account has been created! You are now able to log in', 'success')
-        return redirect(url_for('main.login'))
-    return render_template('register.html', title='Register', form=form)
+        flash("Your account has been created! You are now able to log in", "success")
+        return redirect(url_for("main.login"))
+    return render_template("register.html", title="Register", form=form)
 
-@main.route("/login", methods=['GET', 'POST'])
+
+@main.route("/login", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        return redirect(url_for("main.home"))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')
-            return redirect(next_page) if next_page else redirect(url_for('main.home'))
+            next_page = request.args.get("next")
+            return redirect(next_page) if next_page else redirect(url_for("main.home"))
         else:
-            flash('Login Unsuccessful. Please check email and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+            flash("Login Unsuccessful. Please check email and password", "danger")
+    return render_template("login.html", title="Login", form=form)
+
 
 @main.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for('main.home'))
+    return redirect(url_for("main.home"))
 
-@main.route("/post/new", methods=['GET', 'POST'])
+
+@main.route("/post/new", methods=["GET", "POST"])
 @login_required
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
-            post = Post(title=form.title.data, content=form.content.data, image_file=picture_file, author=current_user)
+            post = Post(
+                title=form.title.data,
+                content=form.content.data,
+                image_file=picture_file,
+                author=current_user,
+            )
         else:
-            post = Post(title=form.title.data, content=form.content.data, author=current_user)
+            post = Post(
+                title=form.title.data, content=form.content.data, author=current_user
+            )
         db.session.add(post)
         db.session.commit()
-        flash('Your post has been created!', 'success')
-        return redirect(url_for('main.home'))
-    return render_template('create_post.html', title='New Post', form=form)
+        flash("Your post has been created!", "success")
+        return redirect(url_for("main.home"))
+    return render_template("create_post.html", title="New Post", form=form)
+
 
 @main.route("/post/<int:post_id>")
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post.html', title=post.title, post=post)
+    return render_template("post.html", title=post.title, post=post)
 
-@main.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
+
+@main.route("/post/<int:post_id>/update", methods=["GET", "POST"])
 @login_required
 def update_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -111,33 +150,36 @@ def update_post(post_id):
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
-        flash('Your post has been updated!', 'success')
-        return redirect(url_for('main.post', post_id=post.id))
-    elif request.method == 'GET':
+        flash("Your post has been updated!", "success")
+        return redirect(url_for("main.post", post_id=post.id))
+    elif request.method == "GET":
         form.title.data = post.title
         form.content.data = post.content
-    return render_template('create_post.html', title='Update Post', form=form, legend='Update Post')
+    return render_template(
+        "create_post.html", title="Update Post", form=form, legend="Update Post"
+    )
 
-@main.route("/post/<int:post_id>/delete", methods=['POST'])
+
+@main.route("/post/<int:post_id>/delete", methods=["POST"])
 @login_required
 @admin_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
     db.session.commit()
-    flash('The post has been deleted!', 'success')
-    return redirect(url_for('main.home'))
+    flash("The post has been deleted!", "success")
+    return redirect(url_for("main.home"))
 
 
-@main.route("/admin/users", methods=['GET', 'POST'])
+@main.route("/admin/users", methods=["GET", "POST"])
 @login_required
 @admin_required
 def manage_users():
     users = User.query.all()
-    if request.method == 'POST':
+    if request.method == "POST":
         for user in users:
-            user.is_admin = 'is_admin_' + str(user.id) in request.form
+            user.is_admin = "is_admin_" + str(user.id) in request.form
         db.session.commit()
-        flash('User roles have been updated!', 'success')
-        return redirect(url_for('main.manage_users'))
-    return render_template('manage_users.html', users=users)
+        flash("User roles have been updated!", "success")
+        return redirect(url_for("main.manage_users"))
+    return render_template("manage_users.html", users=users)

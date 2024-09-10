@@ -9,10 +9,11 @@ from config import Config
 db = SQLAlchemy()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
-login_manager.login_view = 'main.login'
-login_manager.login_message_category = 'info'
+login_manager.login_view = "main.login"
+login_manager.login_message_category = "info"
 csrf = CSRFProtect()
 migrate = Migrate()
+
 
 def create_app():
     app = Flask(__name__)
@@ -25,6 +26,7 @@ def create_app():
     migrate.init_app(app, db)
 
     from app.routes import main as main_blueprint
+
     app.register_blueprint(main_blueprint)
 
     return app

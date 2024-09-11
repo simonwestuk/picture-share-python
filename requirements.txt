@@ -7,3 +7,4 @@ email_validator
 Flask-Migrate
 Pytest
 gunicorn
+Pillow

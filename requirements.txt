@@ -5,3 +5,5 @@ Flask-Login
 flask_wtf
 email_validator
 Flask-Migrate
+Pytest
+gunicorn
